@@ -156,16 +156,16 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div id="auth-buttons">
-            <button id="login-btn" onclick="toggleLoginLogout()">Login</button>
-            <button id="logout-btn" onclick="toggleLoginLogout()" style="display:none;">Logout</button>
+            <button id="login-btn" style="display:none;" onclick="login()">Login</button>
+            <button id="logout-btn" style="display:none;" onclick="logout()">Logout</button>
         </div>
         <h2>Sabbir Rent A Car</h2>
         <a href="#" class="active">Dashboard</a>
         <a href="index.html">Vehicles</a>
-        <a href="dashbord.html">Company Info</a>
+        <a href="dashboard.html">Company Info</a>
         <a href="invoice.html">Invoices</a>
         <a href="payment.html">Reports</a>
-        <a href="#">Settings</a>
+        <a href="settings.html">Settings</a>
     </div>
 
     <!-- Main Content -->
@@ -200,80 +200,97 @@
     <!-- Chart.js Script -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Dynamic Data for Pie Chart
-        const rentalData = {
-            active: 50,
-            pending: 20,
-            completed: 30
-        };
+       document.addEventListener('DOMContentLoaded', () => {
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const mainContent = document.querySelector('.main-content');
 
-        const chartData = [rentalData.active, rentalData.pending, rentalData.completed];
+    // Check if user is logged in
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
+        mainContent.style.display = 'block'; // Show the dashboard
+    } else {
+        loginBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'none';
+        mainContent.style.display = 'none'; // Hide the dashboard
+        alert('Please login to access the dashboard.');
+    }
+});
 
-        // Pie Chart Data
-        var ctx = document.getElementById('myPieChart').getContext('2d');
-        var myPieChart = new Chart(ctx, {
-            type: 'pie',  // Pie chart type
-            data: {
-                labels: ['Active Rentals', 'Pending Rentals', 'Completed Rentals'],  // Data labels
-                datasets: [{
-                    label: 'Rentals Overview',
-                    data: chartData,  // Dynamic data values
-                    backgroundColor: ['#4CAF50', '#FF9800', '#2196F3'],  // Segment colors
-                    borderColor: ['#fff', '#fff', '#fff'],
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,  // Make the chart responsive
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        enabled: true,
+
+            // Dynamic Data for Pie Chart
+            const rentalData = {
+                active: 50,
+                pending: 20,
+                completed: 30
+            };
+
+            const chartData = [rentalData.active, rentalData.pending, rentalData.completed];
+
+            // Pie Chart Data
+            var ctx = document.getElementById('myPieChart').getContext('2d');
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Active Rentals', 'Pending Rentals', 'Completed Rentals'],
+                    datasets: [{
+                        label: 'Rentals Overview',
+                        data: chartData,
+                        backgroundColor: ['#4CAF50', '#FF9800', '#2196F3'],
+                        borderColor: ['#fff', '#fff', '#fff'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            enabled: true,
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // Toggle between Login and Logout buttons
-        let isLoggedIn = false;
+            // Simulating data for Pending Invoices
+            const invoices = [
+                { number: 'INV-001', company: 'ABC Transport', date: '2024-12-01', amount: 5000, status: 'Pending' },
+                { number: 'INV-002', company: 'XYZ Logistics', date: '2024-12-05', amount: 7500, status: 'Completed' },
+                { number: 'INV-003', company: 'LMN Rentals', date: '2024-12-10', amount: 4500, status: 'Pending' }
+            ];
 
-        function toggleLoginLogout() {
-            const loginBtn = document.getElementById('login-btn');
-            const logoutBtn = document.getElementById('logout-btn');
+            localStorage.setItem('invoices', JSON.stringify(invoices));
 
-            if (isLoggedIn) {
-                isLoggedIn = false;
-                loginBtn.style.display = 'inline-block';
-                logoutBtn.style.display = 'none';
-            } else {
-                isLoggedIn = true;
-                loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline-block';
-            }
+            const pendingInvoicesCount = invoices.filter(invoice => invoice.status === 'Pending').length;
+            document.getElementById('pending-invoices').textContent = pendingInvoicesCount;
+   
+
+        function login() {
+            localStorage.setItem('loggedInUser', 'user123');
+            alert('Logged in successfully!');
+            location.reload();
         }
 
-        // Active link management
-        const links = document.querySelectorAll('.sidebar a');
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                links.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-            });
-        });
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            alert('Logged out successfully!');
+            location.reload();
+        }
 
-        // Simulating data for Pending Invoices
-        const invoices = [
-            { number: 'INV-001', company: 'ABC Transport', date: '2024-12-01', amount: 5000, status: 'Pending' },
-            { number: 'INV-002', company: 'XYZ Logistics', date: '2024-12-05', amount: 7500, status: 'Completed' },
-            { number: 'INV-003', company: 'LMN Rentals', date: '2024-12-10', amount: 4500, status: 'Pending' }
-        ];
+        document.addEventListener('DOMContentLoaded', () => {
+    // Load vendor name and dashboard title from localStorage
+    const vendorName = localStorage.getItem('vendorName') || 'Sabbir Rent A Car';
+    const dashboardTitle = localStorage.getItem('dashboardTitle') || 'Sabbir Rent A Car Dashboard';
 
-        localStorage.setItem('invoices', JSON.stringify(invoices));
+    // Update sidebar and header
+    document.querySelector('.sidebar h2').textContent = vendorName;
+    document.querySelector('.dashboard-header h1').textContent = dashboardTitle;
+});
 
-        const pendingInvoicesCount = invoices.filter(invoice => invoice.status === 'Pending').length;
-        document.getElementById('pending-invoices').textContent = pendingInvoicesCount;
     </script>
 </body>
 </html>
