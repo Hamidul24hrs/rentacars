@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vendor Dashboard</title>
@@ -54,6 +56,8 @@
     </style>
 </head>
 <body>
+
+
 
 <!-- Navbar -->
 <<nav style="background-color: green; padding: 10px;">
@@ -194,6 +198,16 @@
 </div>
 
 <script>
+   document.addEventListener('DOMContentLoaded', () => {
+    // Load vendor name and dashboard title from localStorage
+    const vendorName = localStorage.getItem('vendorName') || 'Sabbir Rent A Car';
+    const dashboardTitle = localStorage.getItem('dashboardTitle') || 'Sabbir Rent A Car Dashboard';
+
+    // Update sidebar and header
+    document.querySelector('.sidebar h2').textContent = vendorName;
+    document.querySelector('.dashboard-header h1').textContent = dashboardTitle;
+});
+
 const companies = []; // Array to store company details
 const vehicles = [];  // Array to store vehicle details
 
@@ -380,6 +394,7 @@ function openReports() {
     document.getElementById('addVehicleSection').style.display = 'none';
     document.getElementById('reportsSection').style.display = 'block';
 }
+
 
 // Initialize dropdown on page load
 window.onload = function() {
